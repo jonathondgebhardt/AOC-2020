@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 
-project(aoc_day1_part1 CXX)
+project(aoc_day01_part2 CXX)
 
 set(SOURCE_H
 )

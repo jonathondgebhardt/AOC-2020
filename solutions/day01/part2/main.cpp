@@ -12,13 +12,8 @@ struct Answer
 
 int main(int argc, char* argv[])
 {
-  const auto inputFile = "INPUT_FILE";
+  const auto inputFile = util::GetInputFile("day01.txt");
   const auto numbers = util::ContainerTo<int>(util::Parse(inputFile));
-  if(numbers.empty())
-  {
-    std::cerr << "Could not parse input file '" << inputFile << "'\n";
-    return EXIT_FAILURE;
-  }
 
   std::optional<Answer> aOpt;
   for(auto firstIt = numbers.begin(); firstIt != numbers.end(); firstIt++)
