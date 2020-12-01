@@ -1,0 +1,14 @@
+cmake_minimum_required(VERSION 3.0)
+
+project(aoc_day1_part1 CXX)
+
+set(SOURCE_H
+)
+
+set(SOURCE
+    main.cpp
+)
+
+add_executable(${PROJECT_NAME} ${SOURCE_H} ${SOURCE})
+
+target_link_libraries(${PROJECT_NAME} AOC)

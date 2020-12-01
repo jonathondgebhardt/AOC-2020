@@ -9,12 +9,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O3")
 include_directories(include)
 
 set(AOC_SOURCE
-    src/InputParser.cpp
+    src/Utilities.cpp
 )
 
 set(AOC_SOURCE_H
     include/Export.hpp
-    include/InputParser.hpp
+    include/Utilities.ipp
 )
 
 add_library(AOC SHARED 
