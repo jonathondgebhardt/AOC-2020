@@ -1,0 +1,8 @@
+#pragma once
+
+#include <string>
+
+namespace config
+{
+  std::string GetInputFilePath() { return std::string("@INPUT_FILE_PATH@"); }
+} // namespace config

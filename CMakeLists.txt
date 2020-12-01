@@ -12,9 +12,14 @@ set(AOC_SOURCE
     src/Utilities.cpp
 )
 
+get_filename_component(INPUT_FILE_PATH "inputs" REALPATH BASE_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+configure_file(include/InputDirectoryConfig.ipp.in ${CMAKE_BINARY_DIR}/generated/InputDirectoryConfig.ipp)
+include_directories(${CMAKE_BINARY_DIR}/generated/)
+
 set(AOC_SOURCE_H
     include/Export.hpp
     include/Utilities.ipp
+    include/InputDirectoryConfig.ipp
 )
 
 add_library(AOC SHARED 
@@ -22,4 +27,4 @@ add_library(AOC SHARED
     ${AOC_SOURCE}
 )
 
-add_subdirectory(day1)
+add_subdirectory(solutions)

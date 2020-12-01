@@ -9,6 +9,8 @@
 
 namespace util
 {
+  EXPORT std::string GetInputFile(const std::string& x);
+
   EXPORT std::vector<std::string> Parse(const std::string& x);
 
   template <class T> EXPORT std::optional<T> StringTo(const std::string& x)

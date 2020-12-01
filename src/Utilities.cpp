@@ -1,8 +1,14 @@
+#include <InputDirectoryConfig.ipp>
 #include <Utilities.ipp>
 
 #include <fstream>
 #include <iostream>
 #include <iterator>
+
+std::string util::GetInputFile(const std::string& x)
+{
+  return config::GetInputFilePath() + "/" + x;
+}
 
 std::vector<std::string> util::Parse(const std::string& x)
 {
