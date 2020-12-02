@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
 
   if(!aOpt.has_value())
   {
-    std::cerr << "Found no two numbers that sum to 2020\n";
+    std::cerr << "Found no three numbers that sum to 2020\n";
     return EXIT_FAILURE;
   }
 
