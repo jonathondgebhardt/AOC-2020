@@ -9,11 +9,11 @@
 
 namespace util
 {
-  EXPORT std::string GetInputFile(const std::string& x);
+  UTILITIES_EXPORT std::string GetInputFile(const std::string& x);
 
-  EXPORT std::vector<std::string> Parse(const std::string& x);
+  UTILITIES_EXPORT std::vector<std::string> Parse(const std::string& x);
 
-  template <class T> EXPORT std::optional<T> StringTo(const std::string& x)
+  template <class T> UTILITIES_EXPORT std::optional<T> StringTo(const std::string& x)
   {
     std::optional<T> resultOpt;
 
@@ -33,7 +33,7 @@ namespace util
     return resultOpt;
   }
 
-  template <class T> EXPORT std::vector<T> ContainerTo(const std::vector<std::string>& x)
+  template <class T> UTILITIES_EXPORT std::vector<T> ContainerTo(const std::vector<std::string>& x)
   {
     std::vector<T> converted;
     for(const auto& item : x)
@@ -50,4 +50,6 @@ namespace util
 
     return converted;
   }
+
+  UTILITIES_EXPORT std::vector<std::string> Split(const std::string& x);
 } // namespace util

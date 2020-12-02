@@ -3,15 +3,15 @@
 // clang-format off
 #if defined(_MSC_VER)
     //  Microsoft
-    #define EXPORT __declspec(dllexport)
-    #define IMPORT __declspec(dllimport)
+    #define UTILITIES_EXPORT __declspec(dllexport)
+    #define UTILITIES_IMPORT __declspec(dllimport)
 #elif defined(__GNUC__)
     //  GCC
-    #define EXPORT __attribute__((visibility("default")))
-    #define IMPORT
+    #define UTILITIES_EXPORT __attribute__((visibility("default")))
+    #define UTILITIES_IMPORT
 #else
     //  do nothing and hope for the best?
-    #define EXPORT
-    #define IMPORT
+    #define UTILITIES_EXPORT
+    #define UTILITIES_IMPORT
     #pragma warning Unknown dynamic link import / export semantics.
 #endif
