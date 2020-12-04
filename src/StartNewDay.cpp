@@ -54,7 +54,7 @@ bool createCMakeLists(const std::filesystem::path& x, bool isRoot)
       ofs << "\n";
 
       ofs << "set(SOURCE\n";
-      ofs << "}\n";
+      ofs << ")\n";
 
       ofs << "\n";
 
