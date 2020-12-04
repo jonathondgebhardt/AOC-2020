@@ -11,4 +11,4 @@ set(SOURCE
 
 add_executable(${PROJECT_NAME} ${SOURCE_H} ${SOURCE})
 
-target_link_libraries(${PROJECT_NAME} AOC PasswordEntry)
+target_link_libraries(${PROJECT_NAME} AOC)

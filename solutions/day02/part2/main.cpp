@@ -1,8 +1,8 @@
-#include <Utilities.ipp>
-#include <algorithm>
-#include <day02/PasswordEntry.ipp>
+#include <day02/Utilities.ipp>
 
-struct PasswordEntry_Part2 : PasswordEntry
+#include <algorithm>
+
+struct PasswordEntry_Part2 : util::day02::PasswordEntry
 {
   explicit PasswordEntry_Part2(const std::string& x) : PasswordEntry(x) {}
 

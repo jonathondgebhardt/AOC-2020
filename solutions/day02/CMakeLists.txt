@@ -1,19 +1,23 @@
 set(SOURCE_H
-    Export.hpp
-    PasswordEntry.ipp
+  ${CMAKE_CURRENT_SOURCE_DIR}/Utilities.ipp
 )
 
 set(SOURCE
 )
 
-add_library(PasswordEntry SHARED 
-    ${SOURCE_H}
-    ${SOURCE}
+set(
+  AOC_SOURCE_H
+  ${SOURCE_H}
+  ${AOC_SOURCE_H}
+  PARENT_SCOPE
 )
 
-set_target_properties(PasswordEntry PROPERTIES LINKER_LANGUAGE CXX)
-
-target_link_libraries(PasswordEntry AOC)
+set(
+  AOC_SOURCE
+  ${SOURCE}
+  ${AOC_SOURCE}
+  PARENT_SCOPE
+)
 
 add_subdirectory(part1)
 add_subdirectory(part2)
