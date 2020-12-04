@@ -5,4 +5,6 @@
 namespace config
 {
   std::string GetInputFilePath() { return std::string("@INPUT_FILE_PATH@"); }
+  
+  std::string GetSolutionsPath() { return std::string("@SOLUTIONS_PATH@"); }
 } // namespace config
