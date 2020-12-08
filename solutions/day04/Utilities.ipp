@@ -6,6 +6,8 @@
 #include <Utilities.ipp>
 
 #include <algorithm>
+#include <cctype>
+#include <iomanip>
 #include <iostream>
 #include <string>
 #include <unordered_map>
@@ -35,7 +37,7 @@ namespace util
         return std::make_pair(x.substr(0, delimiter), x.substr(delimiter + 1));
       }
 
-      bool isValid() const
+      virtual bool isValid()
       {
         // Keys:
         // byr (Birth Year)
@@ -49,12 +51,92 @@ namespace util
 
         // According to the prompt, CID can be ignored.
         std::vector<std::string> requiredKeys = {"byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"};
-        return std::any_of(requiredKeys.begin(), requiredKeys.end(), [this](const std::string& x) {
+
+        // If any of the required keys isn't in our credentials, we are invalid.
+        return !std::any_of(requiredKeys.begin(), requiredKeys.end(), [this](const std::string& x) {
           return this->credentials.find(x) == this->credentials.end();
         });
       }
 
       std::unordered_map<std::string, std::string> credentials;
     };
+
+    bool ValidateInt(const std::string& x, int lb, int ub)
+    {
+      const auto xNumber = util::StringTo<int>(x);
+      return xNumber >= lb && xNumber <= ub;
+    }
+
+    // byr (Birth Year) - four digits; at least 1920 and at most 2002.
+    bool ValidateBirthYear(const std::string& x) { return ValidateInt(x, 1920, 2002); }
+
+    // iyr (Issue Year) - four digits; at least 2010 and at most 2020.
+    bool ValidateIssueYear(const std::string& x) { return ValidateInt(x, 2010, 2020); }
+
+    // eyr (Expiration Year) - four digits; at least 2020 and at most 2030.
+    bool ValidateExpirationYear(const std::string& x) { return ValidateInt(x, 2020, 2030); }
+
+    // hgt (Height) - a number followed by either cm or in:
+    //     If cm, the number must be at least 150 and at most 193.
+    //     If in, the number must be at least 59 and at most 76.
+    bool ValidateHeight(const std::string& x)
+    {
+      auto hgtValid = false;
+      if(x.find("cm") != std::string::npos)
+      {
+        const auto cmIndex = x.find("cm");
+        hgtValid = ValidateInt(x.substr(0, cmIndex), 150, 193);
+      }
+      else if(x.find("in") != std::string::npos)
+      {
+        const auto inIndex = x.find("in");
+        hgtValid = ValidateInt(x.substr(0, inIndex), 59, 76);
+      }
+
+      return hgtValid;
+    }
+
+    // hcl (Hair Color) - a # followed by exactly six characters 0-9 or a-f.
+    bool ValidateHairColor(const std::string& x)
+    {
+      if(x.size() != 7)
+      {
+        return false;
+      }
+
+      for(size_t i = 1; i < x.size(); ++i)
+      {
+        // ascii conversions
+        // 0 => 48
+        // 9 => 57
+        // a => 97
+        // f => 102
+        if((x[i] < 48 || x[i] > 57) && (x[i] < 97 || x[i] > 102))
+        {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    // ecl (Eye Color) - exactly one of: amb blu brn gry grn hzl oth.
+    bool ValidateEyeColor(const std::string& x)
+    {
+      return x == "amb" || x == "blu" || x == "brn" || x == "gry" || x == "grn" || x == "hzl" ||
+             x == "oth";
+    }
+
+    // pid (Passport ID) - a nine-digit number, including leading zeroes.
+    bool ValidatePassportID(const std::string& x)
+    {
+      if(x.size() != 9)
+      {
+        return false;
+      }
+
+      return std::all_of(x.begin(), x.end(), [](const char c) { return std::isdigit(c); });
+    }
+
   } // namespace day04
 } // namespace util
