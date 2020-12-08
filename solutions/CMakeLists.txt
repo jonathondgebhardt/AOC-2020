@@ -19,6 +19,7 @@ add_subdirectory(day04)
 add_subdirectory(day05)
 add_subdirectory(day06)
 add_subdirectory(day07)
+add_subdirectory(day08)
 
 # Now that we've visited subdirectories, echo the AOC variables back up to the parent scope.
 set(
