@@ -9,6 +9,7 @@
 #include <cctype>
 #include <iomanip>
 #include <iostream>
+#include <regex>
 #include <string>
 #include <unordered_map>
 
@@ -53,8 +54,8 @@ namespace util
         std::vector<std::string> requiredKeys = {"byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"};
 
         // If any of the required keys isn't in our credentials, we are invalid.
-        return !std::any_of(requiredKeys.begin(), requiredKeys.end(), [this](const std::string& x) {
-          return this->credentials.find(x) == this->credentials.end();
+        return std::all_of(requiredKeys.begin(), requiredKeys.end(), [this](const std::string& x) {
+          return this->credentials.find(x) != this->credentials.end();
         });
       }
 
@@ -99,43 +100,23 @@ namespace util
     // hcl (Hair Color) - a # followed by exactly six characters 0-9 or a-f.
     bool ValidateHairColor(const std::string& x)
     {
-      if(x.size() != 7)
-      {
-        return false;
-      }
-
-      for(size_t i = 1; i < x.size(); ++i)
-      {
-        // ascii conversions
-        // 0 => 48
-        // 9 => 57
-        // a => 97
-        // f => 102
-        if((x[i] < 48 || x[i] > 57) && (x[i] < 97 || x[i] > 102))
-        {
-          return false;
-        }
-      }
-
-      return true;
+      const std::regex hairColorRE("#[a-f0-9]{6}");
+      return std::regex_match(x, hairColorRE);
     }
 
     // ecl (Eye Color) - exactly one of: amb blu brn gry grn hzl oth.
     bool ValidateEyeColor(const std::string& x)
     {
-      return x == "amb" || x == "blu" || x == "brn" || x == "gry" || x == "grn" || x == "hzl" ||
-             x == "oth";
+      std::vector<std::string> validEyeColors = {"amb", "blu", "brn", "gry", "grn", "hzl", "oth"};
+      return std::any_of(validEyeColors.begin(), validEyeColors.end(),
+                         [&x](const std::string& eyeColor) { return eyeColor == x; });
     }
 
     // pid (Passport ID) - a nine-digit number, including leading zeroes.
     bool ValidatePassportID(const std::string& x)
     {
-      if(x.size() != 9)
-      {
-        return false;
-      }
-
-      return std::all_of(x.begin(), x.end(), [](const char c) { return std::isdigit(c); });
+      const std::regex hairColorRE("[0-9]{9}");
+      return std::regex_match(x, hairColorRE);
     }
 
   } // namespace day04
