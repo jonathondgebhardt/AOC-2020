@@ -181,7 +181,6 @@ bool createSourceFiles(const std::filesystem::path& x, bool isRoot)
 
 void showNewDayContents(const std::filesystem::path& x, size_t indent = 1)
 {
-  const auto parentPath = x.parent_path();
   for(const auto& item : std::filesystem::directory_iterator(x))
   {
     for(size_t i = 0; i < indent; ++i)
