@@ -143,5 +143,28 @@ namespace util
 
       return accumulator;
     }
+
+    std::string UTILITIES_EXPORT InvertInstruction(const std::string& x)
+    {
+      const auto instType = StringToInstructionType(x);
+
+      std::string instTypeStr;
+      switch(instType)
+      {
+      case InstructionType::NOP:
+        instTypeStr = InstructionTypeToString(InstructionType::JMP);
+        break;
+      case InstructionType::JMP:
+        instTypeStr = InstructionTypeToString(InstructionType::NOP);
+        break;
+      case InstructionType::ACC:
+      default:
+        break;
+      }
+
+      const auto instOffset = StringToInstructionOffset(x);
+
+      return instTypeStr + " " + std::to_string(instOffset);
+    }
   } // namespace day08
 } // namespace util

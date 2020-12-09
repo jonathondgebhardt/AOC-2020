@@ -29,11 +29,7 @@ int main(int argc, char* argv[])
   {
     auto nopCopy = contents;
     const auto& instruction = nopCopy[nopIndex];
-    const auto instOffset = util::day08::StringToInstructionOffset(instruction);
-    const auto newInstruction =
-        util::day08::InstructionTypeToString(util::day08::InstructionType::JMP) + " " +
-        std::to_string(instOffset);
-    nopCopy[nopIndex] = newInstruction;
+    nopCopy[nopIndex] = util::day08::InvertInstruction(instruction);
 
     if(util::day08::GetDoesProgramTerminate(nopCopy))
     {
@@ -46,11 +42,7 @@ int main(int argc, char* argv[])
   {
     auto jmpCopy = contents;
     const auto& instruction = jmpCopy[jmpIndex];
-    const auto instOffset = util::day08::StringToInstructionOffset(instruction);
-    const auto newInstruction =
-        util::day08::InstructionTypeToString(util::day08::InstructionType::NOP) + " " +
-        std::to_string(instOffset);
-    jmpCopy[jmpIndex] = newInstruction;
+    jmpCopy[jmpIndex] = util::day08::InvertInstruction(instruction);
 
     if(util::day08::GetDoesProgramTerminate(jmpCopy))
     {
