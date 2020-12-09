@@ -19,8 +19,6 @@ std::vector<std::string> util::Parse(const std::string& x)
   {
     for(std::string line; std::getline(ifs, line);)
     {
-      // const auto tokens = util::Split(line);
-      // std::copy(tokens.begin(), tokens.end(), std::back_inserter(contents));
       contents.push_back(line);
     }
   }
