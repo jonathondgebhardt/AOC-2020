@@ -9,28 +9,7 @@ int main(int argc, char* argv[])
   const auto inputFile = util::GetInputFile("day04.txt");
   const auto contents = util::Parse(inputFile);
 
-  std::vector<std::string> credentialLines;
-  std::vector<util::day04::Credential> credentials;
-
-  for(const auto& line : contents)
-  {
-    if(!line.empty())
-    {
-      credentialLines.push_back(line);
-    }
-    else
-    {
-      credentials.emplace_back(credentialLines);
-      credentialLines.clear();
-    }
-  }
-
-  if(!credentialLines.empty())
-  {
-    credentials.emplace_back(credentialLines);
-    credentialLines.clear();
-  }
-
+  auto credentials = util::day04::GetCredentials(contents);
   const auto validCredentials =
       std::count_if(credentials.begin(), credentials.end(),
                     [](util::day04::Credential& x) { return x.isValid(); });

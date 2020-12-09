@@ -62,6 +62,33 @@ namespace util
       std::unordered_map<std::string, std::string> credentials;
     };
 
+    std::vector<Credential> UTILITIES_EXPORT GetCredentials(const std::vector<std::string>& x)
+    {
+      std::vector<Credential> credentials;
+
+      std::vector<std::string> credentialLines;
+      for(const auto& line : x)
+      {
+        if(!line.empty())
+        {
+          credentialLines.push_back(line);
+        }
+        else
+        {
+          credentials.emplace_back(credentialLines);
+          credentialLines.clear();
+        }
+      }
+
+      if(!credentialLines.empty())
+      {
+        credentials.emplace_back(credentialLines);
+        credentialLines.clear();
+      }
+
+      return credentials;
+    }
+
     bool ValidateInt(const std::string& x, int lb, int ub)
     {
       const auto xNumber = util::StringTo<int>(x);

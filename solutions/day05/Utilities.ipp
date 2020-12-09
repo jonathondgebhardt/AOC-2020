@@ -4,6 +4,8 @@
 
 #include <Export.hpp>
 #include <Utilities.ipp>
+
+#include <algorithm>
 #include <cassert>
 
 namespace util
@@ -26,19 +28,31 @@ namespace util
       return ub;
     }
 
-    UTILITIES_EXPORT size_t GetRowNumber(const std::string& x)
+    size_t UTILITIES_EXPORT GetRowNumber(const std::string& x)
     {
       return BinarySpacePartition(x, 127, 'F');
     }
 
-    UTILITIES_EXPORT size_t GetSeatNumber(const std::string& x)
+    size_t UTILITIES_EXPORT GetSeatNumber(const std::string& x)
     {
       return BinarySpacePartition(x, 7, 'L');
     }
 
-    UTILITIES_EXPORT size_t GetSeatID(size_t rowNumber, size_t seatNumber)
+    size_t UTILITIES_EXPORT GetSeatID(size_t rowNumber, size_t seatNumber)
     {
       return rowNumber * 8 + seatNumber;
+    }
+
+    std::vector<size_t> UTILITIES_EXPORT GetSeatIDs(const std::vector<std::string>& x)
+    {
+      std::vector<size_t> seatIDs;
+      std::transform(x.begin(), x.end(), std::back_inserter(seatIDs), [](const std::string& line) {
+        const auto rowNumber = GetRowNumber(line.substr(0, line.size() - 3));
+        const auto seatNumber = GetSeatNumber(line.substr(line.size() - 3));
+        return GetSeatID(rowNumber, seatNumber);
+      });
+
+      return seatIDs;
     }
   } // namespace day05
 } // namespace util

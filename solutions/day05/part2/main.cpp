@@ -8,13 +8,8 @@ int main(int argc, char* argv[])
 {
   const auto fileName = util::GetInputFile("day05.txt");
   const auto contents = util::Parse(fileName);
-  std::vector<size_t> seatIDs;
-  for(const auto& line : contents)
-  {
-    const auto rowNumber = util::day05::GetRowNumber(line.substr(0, line.size() - 3));
-    const auto seatNumber = util::day05::GetSeatNumber(line.substr(line.size() - 3));
-    seatIDs.push_back(util::day05::GetSeatID(rowNumber, seatNumber));
-  }
+
+  auto seatIDs = util::day05::GetSeatIDs(contents);
 
   auto mySeatID = seatIDs.front();
   std::sort(seatIDs.begin(), seatIDs.end());

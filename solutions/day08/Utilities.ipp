@@ -91,19 +91,15 @@ namespace util
         const auto instOffset = StringToInstructionOffset(instruction);
         switch(instType)
         {
-          // Does nothing.
         case InstructionType::NOP:
-          // Offsets accumulator.
         case InstructionType::ACC:
           ++i;
           break;
         case InstructionType::JMP:
-          // Jumps to instruction.
           i += instOffset;
           break;
         default:
           std::cerr << "Could not translate instruction: " << instruction << ", " << i << std::endl;
-          std::exit(EXIT_FAILURE);
           break;
         }
       }
@@ -122,21 +118,20 @@ namespace util
         executedInstructions.push_back(i);
 
         const auto& instruction = x[i];
-        const auto instType = util::day08::StringToInstructionType(instruction);
-        const auto instOffset = util::day08::StringToInstructionOffset(instruction);
+        const auto instType = StringToInstructionType(instruction);
+        const auto instOffset = StringToInstructionOffset(instruction);
         switch(instType)
         {
-        case util::day08::InstructionType::ACC:
+        case InstructionType::ACC:
           accumulator += instOffset;
-        case util::day08::InstructionType::NOP:
+        case InstructionType::NOP:
           ++i;
           break;
-        case util::day08::InstructionType::JMP:
+        case InstructionType::JMP:
           i += instOffset;
           break;
         default:
           std::cerr << "Could not translate instruction: " << instruction << "\n";
-          std::exit(EXIT_FAILURE);
           break;
         }
       }

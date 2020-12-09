@@ -7,46 +7,25 @@ int main(int argc, char* argv[])
   const auto fileName = util::GetInputFile("day08.txt");
   const auto contents = util::Parse(fileName);
 
-  std::vector<size_t> nops;
-  std::vector<size_t> jmps;
+  std::vector<size_t> instructionsToInvert;
   for(size_t i = 0; i < contents.size(); ++i)
   {
     const auto instType = util::day08::StringToInstructionType(contents[i]);
-    switch(instType)
+    if(instType == util::day08::InstructionType::NOP ||
+       instType == util::day08::InstructionType::JMP)
     {
-    case util::day08::InstructionType::NOP:
-      nops.push_back(i);
-      break;
-    case util::day08::InstructionType::JMP:
-      jmps.push_back(i);
-      break;
-    default:
-      break;
+      instructionsToInvert.push_back(i);
     }
   }
 
-  for(auto nopIndex : nops)
+  for(auto index : instructionsToInvert)
   {
-    auto nopCopy = contents;
-    const auto& instruction = nopCopy[nopIndex];
-    nopCopy[nopIndex] = util::day08::InvertInstruction(instruction);
+    auto copy = contents;
+    copy[index] = util::day08::InvertInstruction(copy[index]);
 
-    if(util::day08::GetDoesProgramTerminate(nopCopy))
+    if(util::day08::GetDoesProgramTerminate(copy))
     {
-      std::cout << util::day08::GetFinalAccumulator(nopCopy) << "\n";
-      break;
-    }
-  }
-
-  for(auto jmpIndex : jmps)
-  {
-    auto jmpCopy = contents;
-    const auto& instruction = jmpCopy[jmpIndex];
-    jmpCopy[jmpIndex] = util::day08::InvertInstruction(instruction);
-
-    if(util::day08::GetDoesProgramTerminate(jmpCopy))
-    {
-      std::cout << util::day08::GetFinalAccumulator(jmpCopy) << "\n";
+      std::cout << util::day08::GetFinalAccumulator(copy) << "\n";
       break;
     }
   }
