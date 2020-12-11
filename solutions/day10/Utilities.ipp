@@ -6,13 +6,33 @@
 #include <Utilities.ipp>
 
 #include <algorithm>
+#include <iterator>
 #include <numeric>
 
 namespace util
 {
   namespace day10
   {
-    std::vector<size_t> GetJoltages(const std::vector<std::string>& x)
+    struct UTILITIES_EXPORT JoltageCombination
+    {
+      void dump(std::ostream& os)
+      {
+        os << this->beginJoltage << "\n";
+
+        os << "(";
+        std::copy(this->joltages.begin(), this->joltages.end(),
+                  std::ostream_iterator<size_t>(os, ", "));
+        os << ")\n";
+
+        os << this->endJoltage << "\n\n";
+      }
+
+      std::vector<size_t> joltages;
+      size_t beginJoltage;
+      size_t endJoltage;
+    };
+
+    std::vector<size_t> UTILITIES_EXPORT GetJoltages(const std::vector<std::string>& x)
     {
       std::vector<size_t> joltages;
 
@@ -34,7 +54,7 @@ namespace util
       return joltages;
     }
 
-    std::vector<size_t> GetJoltageDeltas(const std::vector<size_t>& x)
+    std::vector<size_t> UTILITIES_EXPORT GetJoltageDeltas(const std::vector<size_t>& x)
     {
       std::vector<size_t> deltas;
 
@@ -46,23 +66,47 @@ namespace util
       return deltas;
     }
 
-    std::optional<size_t> GetIndexToRemove(const std::vector<size_t>& x, size_t offset = 0)
+    bool UTILITIES_EXPORT GetIsValidAdapterSequence(const std::vector<size_t>& x)
     {
-      std::optional<size_t> index;
+      const auto deltas = GetJoltageDeltas(x);
+      return std::all_of(deltas.begin(), deltas.end(), [](size_t delta) { return delta <= 3; });
+    }
 
-      for(auto it = x.begin() + offset; it != x.end() && !index.has_value(); it++)
-      {
-        if(*it < 3)
+    size_t UTILITIES_EXPORT GetValidCombinations(const JoltageCombination& jc)
+    {
+      size_t count = 0;
+
+      // This is a feels bad. I decided to be lazy and get combinations by hand. This is very
+      // specific to the problem that we're solving for day 10.
+      const auto getCombinations =
+          [](const JoltageCombination& jc) -> std::vector<std::vector<size_t>> {
+        std::vector<std::vector<size_t>> combinations;
+
+        if(jc.joltages.size() == 3)
         {
-          const auto next = it + 1;
-          if(next != x.end() && *it + *next <= 3)
-          {
-            index = std::distance(x.begin(), next);
-          }
+          combinations.push_back({jc.beginJoltage, jc.joltages[0], jc.endJoltage});
+          combinations.push_back({jc.beginJoltage, jc.joltages[1], jc.endJoltage});
+          combinations.push_back({jc.beginJoltage, jc.joltages[2], jc.endJoltage});
+          combinations.push_back({jc.beginJoltage, jc.joltages[0], jc.joltages[1], jc.endJoltage});
+          combinations.push_back({jc.beginJoltage, jc.joltages[0], jc.joltages[2], jc.endJoltage});
+          combinations.push_back({jc.beginJoltage, jc.joltages[1], jc.joltages[2], jc.endJoltage});
+          combinations.push_back(
+              {jc.beginJoltage, jc.joltages[0], jc.joltages[1], jc.joltages[2], jc.endJoltage});
         }
-      }
+        else if(jc.joltages.size() == 2)
+        {
+          combinations.push_back({jc.beginJoltage, jc.joltages[0], jc.endJoltage});
+          combinations.push_back({jc.beginJoltage, jc.joltages[1], jc.endJoltage});
+          combinations.push_back({jc.beginJoltage, jc.joltages[0], jc.joltages[1], jc.endJoltage});
+        }
 
-      return index;
+        return combinations;
+      };
+
+      const auto combinations = getCombinations(jc);
+      return std::count_if(
+          combinations.begin(), combinations.end(),
+          [](const std::vector<size_t>& x) { return GetIsValidAdapterSequence(x); });
     }
 
   } // namespace day10
