@@ -6,6 +6,20 @@
 
 struct AdjacentOccupiedSeatAdapter : public util::day11::OccupiedSeatAdapter
 {
+  bool getShouldSit(int row, int col) const override
+  {
+    // If a seat is empty (L) and there are no occupied seats adjacent to it, the seat becomes
+    // occupied.
+    return !this->getIsSeatOccupied(row, col) && this->getOccupiedSeats(row, col) == 0;
+  }
+
+  bool getShouldStand(int row, int col) const override
+  {
+    // If a seat is occupied (#) and four or more seats adjacent to it are also occupied, the
+    // seat becomes empty.
+    return this->getIsSeatOccupied(row, col) && this->getOccupiedSeats(row, col) >= 4;
+  }
+
   std::optional<bool> checkUp(int row, int col) const override
   {
     if(row - 1 >= 0)
