@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cmath>
+#include <type_traits>
 
 namespace util
 {
@@ -38,71 +39,152 @@ namespace util
       size_t value;
     };
 
-    struct UTILITIES_EXPORT Ship
+    template <typename T, typename Enable = void> struct Ship
     {
+    };
+
+    template <typename T> struct NavigationAdapter
+    {
+      virtual void doNavigationInstruction(NavigationInstruction ni, Ship<T>& s) = 0;
+    };
+
+    struct NavigationAdapter_Part1 : public NavigationAdapter<NavigationAdapter_Part1>
+    {
+      void doNavigationInstruction(NavigationInstruction ni,
+                                   Ship<NavigationAdapter_Part1>& s) override
+      {
+        // switch(ni.action)
+        // {
+        // case Action::Action_North:
+        //   s.y += ni.value;
+        //   break;
+        // case Action::Action_South:
+        //   s.y -= ni.value;
+        //   break;
+        // case Action::Action_East:
+        //   s.x += ni.value;
+        //   break;
+        // case Action::Action_West:
+        //   s.x -= ni.value;
+        //   break;
+        // case Action::Action_Left:
+        // case Action::Action_Right:
+        //   this->turnDirection(ni);
+        //   break;
+        // case Action::Action_Forward:
+        //   switch(s.d)
+        //   {
+        //   case Direction::Direction_East:
+        //     s.x += ni.value;
+        //     break;
+        //   case Direction::Direction_South:
+        //     s.y -= ni.value;
+        //     break;
+        //   case Direction::Direction_West:
+        //     s.x -= ni.value;
+        //     break;
+        //   case Direction::Direction_North:
+        //     s.y += ni.value;
+        //     break;
+        //   default:
+        //     std::cerr << "Cannot move in unknown direction\n";
+        //     break;
+        //   }
+        //   break;
+        // default:
+        //   std::cerr << "Cannot do unknown action\n";
+        //   break;
+        // }
+      }
+
+      // void turnDirection(NavigationInstruction ni, Ship<NavigationAdapter_Part1>& s)
+      // {
+      //   assert(ni.value >= 0 && ni.value <= 270);
+      //   assert(ni.value % 90 == 0);
+
+      //   // There's probably a smarter way to do this. If I always turn right, I can add the
+      //   // number of turns to my direction, rolling over to the beginning if necessary.
+      //   size_t numTurns = ni.value / 90;
+      //   if(ni.action == Action::Action_Left && numTurns != 2)
+      //   {
+      //     numTurns = numTurns == 1 ? 3 : 1;
+      //   }
+
+      //   s.d = static_cast<Direction>((s.d + numTurns) % 4);
+      // }
+    };
+
+    template <typename T>
+    struct UTILITIES_EXPORT
+        Ship<T, typename std::enable_if<std::is_base_of<NavigationAdapter, T>::value>::type>
+    {
+
+      Ship(T navAdapter) : navAdapter(navAdapter) {}
+
       void doNavigationInstruction(NavigationInstruction ni)
       {
         this->instructionsReceived++;
 
-        switch(ni.action)
-        {
-        case Action::Action_North:
-          this->y += ni.value;
-          break;
-        case Action::Action_South:
-          this->y -= ni.value;
-          break;
-        case Action::Action_East:
-          this->x += ni.value;
-          break;
-        case Action::Action_West:
-          this->x -= ni.value;
-          break;
-        case Action::Action_Left:
-        case Action::Action_Right:
-          this->turnDirection(ni);
-          break;
-        case Action::Action_Forward:
-          switch(this->d)
-          {
-          case Direction::Direction_East:
-            this->x += ni.value;
-            break;
-          case Direction::Direction_South:
-            this->y -= ni.value;
-            break;
-          case Direction::Direction_West:
-            this->x -= ni.value;
-            break;
-          case Direction::Direction_North:
-            this->y += ni.value;
-            break;
-          default:
-            std::cerr << "Cannot move in unknown direction\n";
-            break;
-          }
-          break;
-        default:
-          std::cerr << "Cannot do unknown action\n";
-          break;
-        }
+        // switch(ni.action)
+        // {
+        // case Action::Action_North:
+        //   this->y += ni.value;
+        //   break;
+        // case Action::Action_South:
+        //   this->y -= ni.value;
+        //   break;
+        // case Action::Action_East:
+        //   this->x += ni.value;
+        //   break;
+        // case Action::Action_West:
+        //   this->x -= ni.value;
+        //   break;
+        // case Action::Action_Left:
+        // case Action::Action_Right:
+        //   this->turnDirection(ni);
+        //   break;
+        // case Action::Action_Forward:
+        //   switch(this->d)
+        //   {
+        //   case Direction::Direction_East:
+        //     this->x += ni.value;
+        //     break;
+        //   case Direction::Direction_South:
+        //     this->y -= ni.value;
+        //     break;
+        //   case Direction::Direction_West:
+        //     this->x -= ni.value;
+        //     break;
+        //   case Direction::Direction_North:
+        //     this->y += ni.value;
+        //     break;
+        //   default:
+        //     std::cerr << "Cannot move in unknown direction\n";
+        //     break;
+        //   }
+        //   break;
+        // default:
+        //   std::cerr << "Cannot do unknown action\n";
+        //   break;
+        // }
       }
 
-      void turnDirection(NavigationInstruction ni)
-      {
-        assert(ni.value >= 0 && ni.value <= 270);
-        assert(ni.value % 90 == 0);
+      // void turnDirection(NavigationInstruction ni)
+      // {
+      //   assert(ni.value >= 0 && ni.value <= 270);
+      //   assert(ni.value % 90 == 0);
 
-        // There's probably a smarter way to do this. If I always turn right, I can add the number
-        // of turns to my direction, rolling over to the beginning if necessary.
-        size_t numTurns = ni.value / 90;
-        if(ni.action == Action::Action_Left && numTurns != 2)
-        {
-          numTurns = numTurns == 1 ? 3 : 1;
-        }
+      //   // There's probably a smarter way to do this. If I always turn right, I can add the
+      //   number
+      //   // of turns to my direction, rolling over to the beginning if necessary.
+      //   size_t numTurns = ni.value / 90;
+      //   if(ni.action == Action::Action_Left && numTurns != 2)
+      //   {
+      //     numTurns = numTurns == 1 ? 3 : 1;
+      //   }
 
-        this->d = static_cast<Direction>((this->d + numTurns) % 4);
-      }
+      //   this->d = static_cast<Direction>((this->d + numTurns) % 4);
+      // }
 
       size_t getManhattanDistance() const { return std::abs(x) + std::abs(y); }
 
@@ -135,6 +217,7 @@ namespace util
         os << "\n";
       }
 
+      T navAdapter;
       Direction d{Direction::Direction_East};
       int x{0};
       int y{0};
