@@ -166,25 +166,6 @@ namespace util
           this->rotateWaypoint(ni);
           break;
         case Action::Action_Forward:
-          // switch(this->d)
-          // {
-          // case Direction::Direction_East:
-          //   this->x += ni.value;
-          //   break;
-          // case Direction::Direction_South:
-          //   this->y -= ni.value;
-          //   break;
-          // case Direction::Direction_West:
-          //   this->x -= ni.value;
-          //   break;
-          // case Direction::Direction_North:
-          //   this->y += ni.value;
-          //   break;
-          // default:
-          //   std::cerr << "Cannot move in unknown direction\n";
-          //   break;
-          // }
-
           // move ship towards waypoint
           this->x += ni.value * this->waypoint.first;
           this->y += ni.value * this->waypoint.second;
