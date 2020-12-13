@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
 
   const auto nis = util::day12::GetNavigationInstructions(contents);
 
-  util::day12::Ship s;
+  util::day12::Ship<util::day12::NavigationStrategy_Part1> s;
   for(const auto ni : nis)
   {
     s.doNavigationInstruction(ni);
