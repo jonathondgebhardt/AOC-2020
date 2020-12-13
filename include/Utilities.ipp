@@ -51,5 +51,5 @@ namespace util
     return converted;
   }
 
-  UTILITIES_EXPORT std::vector<std::string> Split(const std::string& x);
+  UTILITIES_EXPORT std::vector<std::string> Split(const std::string& x, char delimiter = ' ');
 } // namespace util

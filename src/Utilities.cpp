@@ -30,11 +30,16 @@ std::vector<std::string> util::Parse(const std::string& x)
   return contents;
 }
 
-std::vector<std::string> util::Split(const std::string& x)
+std::vector<std::string> util::Split(const std::string& x, char delimiter)
 {
-  std::stringstream ss(x);
-  std::istream_iterator<std::string> begin(ss);
-  std::istream_iterator<std::string> end;
+  std::vector<std::string> tokens;
 
-  return {begin, end};
+  std::stringstream ss(x);
+  std::string s;
+  while(std::getline(ss, s, delimiter))
+  {
+    tokens.push_back(s);
+  }
+
+  return tokens;
 }
