@@ -11,25 +11,29 @@ namespace util
 {
   namespace day13
   {
+    typedef int64_t Time;
+
     struct UTILITIES_EXPORT Bus
     {
       bool operator<(Bus& other) { return this->departureTime < other.departureTime; }
 
       void dump(std::ostream& os)
       {
-        os << "Bus Id: " << this->busId << ", closest time: " << this->departureTime << "\n";
+        os << "Bus Id: " << this->busId << ", closest time: " << this->departureTime
+           << ", offset: " << this->departureOffset << "\n";
       }
 
       size_t busId;
-      size_t departureTime;
+      Time departureTime;
+      Time departureOffset;
     };
 
-    size_t UTILITIES_EXPORT GetEarliestTimeToDepart(const std::vector<std::string>& x)
+    Time UTILITIES_EXPORT GetEarliestTimeToDepart(const std::vector<std::string>& x)
     {
       if(!x.empty())
       {
         const auto first = x.front();
-        const auto opt = util::StringTo<size_t>(first);
+        const auto opt = util::StringTo<Time>(first);
         if(opt.has_value())
         {
           return opt.value();
@@ -39,16 +43,16 @@ namespace util
       return 0;
     }
 
-    std::vector<Bus> GetBuses(const std::vector<std::string>& x, size_t departureTime)
+    std::vector<Bus> GetBuses(const std::vector<std::string>& x, Time departureTime)
     {
       std::vector<Bus> buses;
 
       if(x.size() > 1)
       {
         const auto tokens = util::Split(x[1], ',');
-        for(const auto& t : tokens)
+        for(size_t i = 0; i < tokens.size(); ++i)
         {
-          const auto busIdOpt = util::StringTo<size_t>(t);
+          const auto busIdOpt = util::StringTo<Time>(tokens[i]);
           if(busIdOpt.has_value() && busIdOpt.value() != 0)
           {
             const auto time = busIdOpt.value();
@@ -59,6 +63,8 @@ namespace util
             auto earliestTime = (departureTime / time) * time + time;
             b.departureTime = earliestTime;
 
+            b.departureOffset = i;
+
             buses.push_back(b);
           }
         }
@@ -67,13 +73,12 @@ namespace util
       return buses;
     }
 
-    size_t GetLowestTimeToWait(std::vector<Bus> buses, size_t departureTime)
+    Time GetLowestTimeToWait(std::vector<Bus> buses, Time departureTime)
     {
       std::sort(buses.begin(), buses.end());
       const auto firstBus = buses.front();
 
       return firstBus.busId * (firstBus.departureTime - departureTime);
     }
-
   } // namespace day13
 } // namespace util
