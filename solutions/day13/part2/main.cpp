@@ -16,11 +16,6 @@ int main(int argc, char* argv[])
   util::day13::Time multiplier = 100000000000000;
   while(multiplier != 0)
   {
-    if(multiplier % 100000000000000 == 0)
-    {
-      std::cout << "going big\n";
-    }
-
     const auto firstMultiple = firstBus.busId * multiplier;
 
     if(std::all_of(buses.begin(), buses.end(), [firstMultiple](const util::day13::Bus b) {
