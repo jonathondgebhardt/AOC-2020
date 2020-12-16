@@ -74,8 +74,6 @@ namespace util
 
     size_t UTILITIES_EXPORT GetValidCombinations(const JoltageCombination& jc)
     {
-      size_t count = 0;
-
       // This is a feels bad. I decided to be lazy and get combinations by hand. This is very
       // specific to the problem that we're solving for day 10.
       const auto getCombinations =

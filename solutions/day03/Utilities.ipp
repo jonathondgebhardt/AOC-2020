@@ -19,7 +19,8 @@ namespace util
 
       // According to the prompt, we can skip the starting location at 0, 0.
       // I'm assuming that each row is exactly the same length.
-      for(int i = down, j = right; i < x.size(); i += down, j = (j + right) % x[0].size())
+      for(int i = down, j = right; static_cast<size_t>(i) < x.size();
+          i += down, j = (j + right) % x[0].size())
       {
         // The pattern repeats infinitely horizontally so wrap around the side.
         if(x[i][j] == '#')

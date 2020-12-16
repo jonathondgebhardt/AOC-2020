@@ -42,7 +42,7 @@ struct AdjacentOccupiedSeatAdapter : public util::day11::OccupiedSeatAdapter
 
   std::optional<bool> checkUpDiagonalRight(int row, int col) const override
   {
-    if(row - 1 >= 0 && col + 1 < this->seats[row - 1].size())
+    if(row - 1 >= 0 && static_cast<size_t>(col + 1) < this->seats[row - 1].size())
     {
       return this->getIsSeatOccupied(row - 1, col + 1);
     }
@@ -62,7 +62,7 @@ struct AdjacentOccupiedSeatAdapter : public util::day11::OccupiedSeatAdapter
 
   std::optional<bool> checkRight(int row, int col) const override
   {
-    if(row >= 0 && col + 1 < this->seats[row].size())
+    if(row >= 0 && static_cast<size_t>(col + 1) < this->seats[row].size())
     {
       return this->getIsSeatOccupied(row, col + 1);
     }
@@ -72,7 +72,7 @@ struct AdjacentOccupiedSeatAdapter : public util::day11::OccupiedSeatAdapter
 
   std::optional<bool> checkDown(int row, int col) const override
   {
-    if(row + 1 < this->seats.size())
+    if(static_cast<size_t>(row + 1) < this->seats.size())
     {
       return this->getIsSeatOccupied(row + 1, col);
     }
@@ -82,7 +82,7 @@ struct AdjacentOccupiedSeatAdapter : public util::day11::OccupiedSeatAdapter
 
   std::optional<bool> checkDownDiagonalLeft(int row, int col) const override
   {
-    if(row + 1 < this->seats.size() && col - 1 >= 0)
+    if(static_cast<size_t>(row + 1) < this->seats.size() && col - 1 >= 0)
     {
       return this->getIsSeatOccupied(row + 1, col - 1);
     }
@@ -92,7 +92,8 @@ struct AdjacentOccupiedSeatAdapter : public util::day11::OccupiedSeatAdapter
 
   std::optional<bool> checkDownDiagonalRight(int row, int col) const override
   {
-    if(row + 1 < this->seats.size() && col + 1 < this->seats[row + 1].size())
+    if(static_cast<size_t>(row + 1) < this->seats.size() &&
+       static_cast<size_t>(col + 1) < this->seats[row + 1].size())
     {
       return this->getIsSeatOccupied(row + 1, col + 1);
     }

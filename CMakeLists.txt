@@ -4,15 +4,20 @@ project(AOC_2020 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -O3")
-set(CMAKE_CONFIGURATION_TYPES Debug Release RelWithDebInfo CACHE STRING INTERNAL FORCE)
+set(CMAKE_CONFIGURATION_TYPES Debug RelWithDebInfo Release CACHE STRING INTERNAL FORCE)
 
 set(CMAKE_BUILD_TYPE 
-    RelWithDebInfo 
+    Release 
     CACHE 
     STRING 
-    "Choose the build type: Debug Release RelWithDebInfo"
+    "Choose the build type: Debug RelWithDebInfo Release"
 )
+
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Wall")
+set(CMAKE_CXX_FLAGS_DEBUG_INIT "-g")
+set(CMAKE_CXX_FLAGS_RELWITHDEBINFO_INIT "-O2 -g")
+set(CMAKE_CXX_FLAGS_RELEASE_INIT "-O3")
 
 set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS ${CMAKE_CONFIGURATION_TYPES} )
 
