@@ -16,6 +16,21 @@ namespace util
 {
   namespace day14
   {
+    int64_t UTILITIES_EXPORT GetDecimalValue(const std::array<char, 36> x)
+    {
+      int64_t decimalValue = 0;
+
+      for(int i = 0, j = x.size() - 1; i < x.size(); ++i, --j)
+      {
+        if(x[j] == '1')
+        {
+          decimalValue += std::pow(2, i);
+        }
+      }
+
+      return decimalValue;
+    }
+
     struct UTILITIES_EXPORT Word
     {
       Word() { this->value.fill('0'); }
@@ -31,12 +46,10 @@ namespace util
         }
       }
 
-      int64_t operator+(const Word& other) const
+      int64_t operator+(int64_t otherValue) const
       {
-        return this->getDecimalValue() + other.getDecimalValue();
+        return GetDecimalValue(this->value) + otherValue;
       }
-
-      int64_t operator+(int64_t otherValue) const { return this->getDecimalValue() + otherValue; }
 
       void dump(std::ostream& os) const
       {
@@ -47,23 +60,8 @@ namespace util
           os << this->value[i];
         }
 
-        // os << "(" << this->getDecimalValue() << ")";
+        os << "(" << GetDecimalValue(this->value) << ")";
         os << "\n";
-      }
-
-      int64_t getDecimalValue() const
-      {
-        int64_t decimalValue = 0;
-
-        for(int i = 0, j = this->value.size() - 1; i < this->value.size(); ++i, --j)
-        {
-          if(this->value[j] == '1')
-          {
-            decimalValue += std::pow(2, i);
-          }
-        }
-
-        return decimalValue;
       }
 
       int64_t location;
@@ -105,7 +103,7 @@ namespace util
 
         for(const auto& m : this->memory)
         {
-          sum += m.second.getDecimalValue();
+          sum += GetDecimalValue(m.second.value);
         }
 
         return sum;
