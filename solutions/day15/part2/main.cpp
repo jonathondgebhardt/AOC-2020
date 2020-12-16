@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
 
   const auto nums = util::day15::GetStartingNumbers(contents);
 
-  std::cout << util::day15::GetNthWordSpoken(nums, 2020) << "\n";
+  std::cout << util::day15::GetNthWordSpoken(nums, 30000000) << "\n";
 
   return EXIT_SUCCESS;
 }

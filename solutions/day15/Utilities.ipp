@@ -7,12 +7,13 @@
 
 #include <algorithm>
 #include <cmath>
+#include <unordered_map>
 
 namespace util
 {
   namespace day15
   {
-    std::vector<size_t> GetStartingNumbers(const std::vector<std::string>& x)
+    std::vector<size_t> UTILITIES_EXPORT GetStartingNumbers(const std::vector<std::string>& x)
     {
       std::vector<size_t> startingNumbers;
 
@@ -25,38 +26,54 @@ namespace util
       return startingNumbers;
     }
 
-    std::optional<size_t> GetLastTimeSpoken(const std::vector<size_t>& x, size_t num)
+    std::optional<size_t> UTILITIES_EXPORT GetLastTimeSpoken(std::unordered_map<size_t, size_t>& x,
+                                                             size_t num)
     {
       std::optional<size_t> lastTime;
 
-      const auto it = std::find(x.rbegin(), x.rend(), num);
-      if(it != x.rend())
+      const auto it = x.find(num);
+      if(it != x.end())
       {
-        lastTime = x.size() - std::distance(x.rbegin(), it);
+        lastTime = x[num];
       }
 
       return lastTime;
     }
 
-    size_t Get2020(std::vector<size_t> x)
+    size_t UTILITIES_EXPORT GetNthWordSpoken(const std::vector<size_t>& x, size_t n)
     {
-      size_t count = 0;
-      size_t iterations = 2020 - x.size();
-      while(count++ < iterations)
+      std::unordered_map<size_t, size_t> words;
+      for(size_t i = 0; i < x.size(); ++i)
       {
-        const auto currentNum = x.back();
-        const auto lastTimeOpt = GetLastTimeSpoken({x.begin(), x.end() - 1}, currentNum);
-        if(lastTimeOpt.has_value())
+        words[x[i]] = i + 1;
+      }
+
+      size_t turn = x.size() + 1;
+      auto lastNumSpoken = x.back();
+      auto lastTurnSpoken = x.size();
+      while(turn <= n)
+      {
+        if(lastTurnSpoken == words[lastNumSpoken])
         {
-          x.push_back(x.size() - lastTimeOpt.value());
+          lastNumSpoken = 0;
         }
         else
         {
-          x.push_back(0);
+          lastNumSpoken = words[lastNumSpoken] - lastTurnSpoken;
         }
+
+        if(words.find(lastNumSpoken) == words.end())
+        {
+          words[lastNumSpoken] = turn;
+        }
+
+        lastTurnSpoken = words[lastNumSpoken];
+        words[lastNumSpoken] = turn;
+
+        ++turn;
       }
 
-      return x.back();
+      return lastNumSpoken;
     }
   } // namespace day15
 } // namespace util
