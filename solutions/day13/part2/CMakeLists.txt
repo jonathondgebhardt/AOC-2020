@@ -13,4 +13,4 @@ set(SOURCE
 
 add_executable(${PROJECT_NAME} ${SOURCE_H} ${SOURCE})
 
-target_link_libraries(${PROJECT_NAME} AOC)
+target_link_libraries(${PROJECT_NAME} AOC pthread)

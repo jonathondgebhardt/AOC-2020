@@ -11,7 +11,7 @@ namespace util
 {
   namespace day13
   {
-    typedef int64_t Time;
+    typedef uint64_t Time;
 
     struct UTILITIES_EXPORT Bus
     {
