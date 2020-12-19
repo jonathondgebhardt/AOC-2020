@@ -7,4 +7,9 @@ NamespaceIndentation: All
 DerivePointerAlignment: false
 PointerAlignment: Left
 SpaceBeforeParens: Never
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
 ...
