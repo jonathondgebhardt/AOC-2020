@@ -9,6 +9,8 @@
 #include <cassert>
 #include <numeric>
 #include <ostream>
+#include <set>
+#include <unordered_map>
 
 namespace util
 {
@@ -19,6 +21,10 @@ namespace util
       typedef std::vector<std::pair<size_t, size_t>> Fields;
       Fields fields;
       std::string fieldName;
+
+      Rule()
+      {
+      }
 
       explicit Rule(const Fields& fields, const std::string& fieldName)
           : fields(fields), fieldName(fieldName)
@@ -33,11 +39,18 @@ namespace util
                            });
       }
 
+      bool operator==(const Rule& other) const
+      {
+        return this->fieldName == other.fieldName;
+      }
+
       void dump(std::ostream& os) const
       {
+        os << this->fieldName << ":\n";
+
         for(const auto field : this->fields)
         {
-          os << field.first << ", " << field.second << "\n";
+          os << "\t" << field.first << ", " << field.second << "\n";
         }
 
         os << "\n";
@@ -87,6 +100,21 @@ namespace util
 
     typedef std::vector<size_t> Ticket;
 
+    Ticket GetYourTicket(const std::vector<std::string>& x)
+    {
+      Ticket t;
+
+      const auto it = std::find(x.begin(), x.end(), "your ticket:");
+      assert(it != x.end());
+
+      const auto tokens = util::Split(*(it + 1), ',');
+      std::transform(
+          tokens.begin(), tokens.end(), std::back_inserter(t),
+          [](const std::string& token) { return util::StringTo<size_t>(token).value(); });
+
+      return t;
+    }
+
     std::vector<Ticket> GetNearbyTickets(const std::vector<std::string>& x)
     {
       std::vector<Ticket> tickets;
@@ -110,8 +138,6 @@ namespace util
 
     struct UTILITIES_EXPORT TicketMaster
     {
-      std::vector<Ticket> tickets;
-      std::vector<Rule> rules;
 
       TicketMaster(const std::vector<Rule>& rules, const std::vector<Ticket> tickets)
           : rules(rules), tickets(tickets)
@@ -138,7 +164,130 @@ namespace util
 
         return sum;
       }
-    };
 
+      void removeInvalidTickets()
+      {
+        const auto getShouldRemove = [this](const Ticket& t) {
+          for(const auto field : t)
+          {
+            if(std::none_of(this->rules.begin(), this->rules.end(),
+                            [field](const Rule& r) { return r.getIsValid(field); }))
+            {
+              return true;
+            }
+          }
+
+          return false;
+        };
+
+        this->tickets.erase(
+            std::remove_if(this->tickets.begin(), this->tickets.end(), getShouldRemove),
+            this->tickets.end());
+      }
+
+      void assignTicketFields()
+      {
+        // Map ticket fields to number of unsatisfied rules
+        std::unordered_map<size_t, size_t> blacklist;
+        for(size_t i = 0; i < this->rules.size(); ++i)
+        {
+          blacklist[i] = 0;
+        }
+
+        for(const auto& ticket : this->tickets)
+        {
+          for(size_t i = 0; i < ticket.size(); ++i)
+          {
+            for(const auto& rule : this->rules)
+            {
+              if(!rule.getIsValid(ticket[i]))
+              {
+                blacklist[i]++;
+              }
+            }
+          }
+        }
+
+        // At this point, we know what ticket fields cannot satisfy what rules. Try to assign rules
+        // to ticket fields by process of elimination.
+        std::vector<Rule> availableRules;
+        std::copy(this->rules.begin(), this->rules.end(), std::back_inserter(availableRules));
+
+        const auto& ticket = this->tickets[0];
+
+        while(!blacklist.empty() && !availableRules.empty())
+        {
+          // I'm assuming that the field that can't satisfy the most amount of rules can satisfy at
+          // least one.
+          const auto biggestFieldIt = std::max_element(
+              blacklist.begin(), blacklist.end(),
+              [](const auto first, const auto second) { return first.second < second.second; });
+          const auto index = (*biggestFieldIt).first;
+
+          auto ruleIt = availableRules.begin();
+          for(; ruleIt != availableRules.end(); ruleIt++)
+          {
+            if((*ruleIt).getIsValid(ticket[index]))
+            {
+              break;
+            }
+          }
+
+          assert(ruleIt != availableRules.end());
+          assert(this->ruleAssignments.find((*biggestFieldIt).first) ==
+                 this->ruleAssignments.end());
+
+          this->ruleAssignments[(*biggestFieldIt).first] = *ruleIt;
+
+          availableRules.erase(ruleIt);
+          blacklist.erase(biggestFieldIt);
+        }
+
+        assert(availableRules.empty());
+      }
+
+      size_t sumDeparture(const Ticket& t) const
+      {
+        size_t sum = 0;
+
+        for(const auto& ruleAssignment : this->ruleAssignments)
+        {
+          if(ruleAssignment.second.fieldName.find("departure") != std::string::npos)
+          {
+            sum += t[ruleAssignment.first];
+          }
+        }
+
+        return sum;
+      }
+
+      void dump(std::ostream& os)
+      {
+        os << "Rules: \n";
+
+        for(const auto& rule : this->rules)
+        {
+          rule.dump(os);
+        }
+
+        os << "Tickets: \n";
+
+        for(const auto& ticket : this->tickets)
+        {
+          for(const auto field : ticket)
+          {
+            os << field << ", ";
+          }
+
+          os << "\n";
+        }
+
+        os << "\n";
+      }
+
+      std::unordered_map<size_t, Rule> ruleAssignments;
+      std::vector<Ticket> tickets;
+      std::vector<Rule> rules;
+    };
   } // namespace day16
 } // namespace util
